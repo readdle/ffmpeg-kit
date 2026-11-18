@@ -47,25 +47,25 @@ armv7)
   TARGET_CPU="armv7"
   TARGET_ARCH="armv7"
   ASM_OPTIONS=" --enable-neon --enable-asm"
-  BITCODE_FLAGS="-fembed-bitcode -Wc,-fembed-bitcode"
+  BITCODE_FLAGS=""
   ;;
 armv7s)
   TARGET_CPU="armv7s"
   TARGET_ARCH="armv7s"
   ASM_OPTIONS=" --enable-neon --enable-asm"
-  BITCODE_FLAGS="-fembed-bitcode -Wc,-fembed-bitcode"
+  BITCODE_FLAGS=""
   ;;
 arm64)
   TARGET_CPU="armv8"
   TARGET_ARCH="aarch64"
   ASM_OPTIONS=" --enable-neon --enable-asm"
-  BITCODE_FLAGS="-fembed-bitcode -Wc,-fembed-bitcode"
+  BITCODE_FLAGS=""
   ;;
 arm64-mac-catalyst)
   TARGET_CPU="armv8"
   TARGET_ARCH="aarch64"
   ASM_OPTIONS=" --enable-neon --enable-asm"
-  BITCODE_FLAGS="-fembed-bitcode -Wc,-fembed-bitcode"
+  BITCODE_FLAGS=""
   ;;
 arm64-simulator)
   TARGET_CPU="armv8"
@@ -77,7 +77,7 @@ arm64e)
   TARGET_CPU="armv8.3-a"
   TARGET_ARCH="aarch64"
   ASM_OPTIONS=" --enable-neon --enable-asm"
-  BITCODE_FLAGS="-fembed-bitcode -Wc,-fembed-bitcode"
+  BITCODE_FLAGS=""
   ;;
 i386)
   TARGET_CPU="i386"
@@ -95,7 +95,7 @@ x86-64-mac-catalyst)
   TARGET_CPU="x86_64"
   TARGET_ARCH="x86_64"
   ASM_OPTIONS=" --disable-neon --disable-asm"
-  BITCODE_FLAGS="-fembed-bitcode -Wc,-fembed-bitcode"
+  BITCODE_FLAGS=""
   ;;
 esac
 
@@ -502,7 +502,8 @@ ${SED_INLINE} "s/\$version/$FFMPEG_VERSION/g" "${BASEDIR}"/src/"${LIB_NAME}"/ffb
   --disable-nvenc \
   --disable-vaapi \
   --disable-vdpau \
-  ${CONFIGURE_POSTFIX} 1>>"${BASEDIR}"/build.log 2>&1
+  ${CONFIGURE_POSTFIX} \
+  ${FFMPEG_KIT_EXTRA_CONFIGURE_OPTIONS} 1>>"${BASEDIR}"/build.log 2>&1
 
 if [[ $? -ne 0 ]]; then
   echo -e "failed\n\nSee build.log for details\n"

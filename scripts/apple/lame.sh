@@ -10,6 +10,9 @@ if [[ ! -f "${BASEDIR}"/src/"${LIB_NAME}"/configure ]] || [[ ${RECONF_lame} -eq 
   autoreconf_library "${LIB_NAME}"
 fi
 
+# USE THE LATEST config.sub SO THAT arm64-ios-darwin HOSTS ARE RECOGNISED
+overwrite_file "${FFMPEG_KIT_TMPDIR}"/source/config/config.sub ./config.sub || return 1
+
 ./configure \
   --prefix="${LIB_INSTALL_PREFIX}" \
   --with-pic \
