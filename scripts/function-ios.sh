@@ -59,7 +59,7 @@ libraries are created under the prebuilt folder.\n"
 }
 
 enable_main_build() {
-  export IOS_MIN_VERSION=12.1
+  export IOS_MIN_VERSION=16.0
 }
 
 enable_lts_build() {
@@ -82,13 +82,13 @@ get_common_cflags() {
 
   case ${ARCH} in
   i386 | x86-64 | arm64-simulator)
-    echo "-fstrict-aliasing -DIOS ${LTS_BUILD_FLAG}${BUILD_DATE} -isysroot ${SDK_PATH}"
+    echo "-fstrict-aliasing -fno-common -DIOS ${LTS_BUILD_FLAG}${BUILD_DATE} -isysroot ${SDK_PATH}"
     ;;
   *-mac-catalyst)
-    echo "-fstrict-aliasing -fembed-bitcode -DMACOSX ${LTS_BUILD_FLAG}${BUILD_DATE} -isysroot ${SDK_PATH}"
+    echo "-fstrict-aliasing -fno-common -DMACOSX ${LTS_BUILD_FLAG}${BUILD_DATE} -isysroot ${SDK_PATH}"
     ;;
   *)
-    echo "-fstrict-aliasing -fembed-bitcode -DIOS ${LTS_BUILD_FLAG}${BUILD_DATE} -isysroot ${SDK_PATH}"
+    echo "-fstrict-aliasing -fno-common -DIOS ${LTS_BUILD_FLAG}${BUILD_DATE} -isysroot ${SDK_PATH}"
     ;;
   esac
 }
@@ -114,13 +114,13 @@ get_arch_specific_cflags() {
     echo "-arch arm64e -target $(get_target) -march=armv8.3-a+crc+crypto -mcpu=generic -DFFMPEG_KIT_ARM64E"
     ;;
   i386)
-    echo "-arch i386 -target $(get_target) -march=i386 -mtune=intel -mssse3 -mfpmath=sse -m32 -DFFMPEG_KIT_I386"
+    echo "-arch i386 -target $(get_target) -march=i386 -mtune=generic -mssse3 -mfpmath=sse -m32 -DFFMPEG_KIT_I386"
     ;;
   x86-64)
-    echo "-arch x86_64 -target $(get_target) -march=x86-64 -msse4.2 -mpopcnt -m64 -mtune=intel -DFFMPEG_KIT_X86_64"
+    echo "-arch x86_64 -target $(get_target) -march=x86-64 -msse4.2 -mpopcnt -m64 -mtune=generic -DFFMPEG_KIT_X86_64"
     ;;
   x86-64-mac-catalyst)
-    echo "-arch x86_64 -target $(get_target) -march=x86-64 -msse4.2 -mpopcnt -m64 -mtune=intel -DFFMPEG_KIT_X86_64_MAC_CATALYST -isysroot ${SDK_PATH} -isystem ${SDK_PATH}/System/iOSSupport/usr/include -iframework ${SDK_PATH}/System/iOSSupport/System/Library/Frameworks"
+    echo "-arch x86_64 -target $(get_target) -march=x86-64 -msse4.2 -mpopcnt -m64 -mtune=generic -DFFMPEG_KIT_X86_64_MAC_CATALYST -isysroot ${SDK_PATH} -isystem ${SDK_PATH}/System/iOSSupport/usr/include -iframework ${SDK_PATH}/System/iOSSupport/System/Library/Frameworks"
     ;;
   esac
 }
@@ -255,7 +255,7 @@ get_cxxflags() {
   local BITCODE_FLAGS=""
   case ${ARCH} in
   armv7 | armv7s | arm64 | arm64e | *-mac-catalyst)
-    local BITCODE_FLAGS="-fembed-bitcode"
+    local BITCODE_FLAGS=""
     ;;
   esac
 
@@ -320,22 +320,22 @@ get_size_optimization_ldflags() {
 get_arch_specific_ldflags() {
   case ${ARCH} in
   armv7)
-    echo "-arch armv7 -march=armv7 -mfpu=neon -mfloat-abi=softfp -fembed-bitcode -target $(get_target)"
+    echo "-arch armv7 -march=armv7 -mfpu=neon -mfloat-abi=softfp -target $(get_target)"
     ;;
   armv7s)
-    echo "-arch armv7s -march=armv7s -mfpu=neon -mfloat-abi=softfp -fembed-bitcode -target $(get_target)"
+    echo "-arch armv7s -march=armv7s -mfpu=neon -mfloat-abi=softfp -target $(get_target)"
     ;;
   arm64)
-    echo "-arch arm64 -march=armv8-a+crc+crypto -fembed-bitcode -target $(get_target)"
+    echo "-arch arm64 -march=armv8-a+crc+crypto -target $(get_target)"
     ;;
   arm64-mac-catalyst)
-    echo "-arch arm64 -march=armv8-a+crc+crypto -fembed-bitcode -target $(get_target) -isysroot ${SDK_PATH} -L${SDK_PATH}/System/iOSSupport/usr/lib -iframework ${SDK_PATH}/System/iOSSupport/System/Library/Frameworks"
+    echo "-arch arm64 -march=armv8-a+crc+crypto -target $(get_target) -isysroot ${SDK_PATH} -L${SDK_PATH}/System/iOSSupport/usr/lib -iframework ${SDK_PATH}/System/iOSSupport/System/Library/Frameworks"
     ;;
   arm64-simulator)
     echo "-arch arm64 -march=armv8-a+crc+crypto -target $(get_target)"
     ;;
   arm64e)
-    echo "-arch arm64e -march=armv8.3-a+crc+crypto -fembed-bitcode -target $(get_target)"
+    echo "-arch arm64e -march=armv8.3-a+crc+crypto -target $(get_target)"
     ;;
   i386)
     echo "-arch i386 -march=i386 -target $(get_target)"
@@ -363,7 +363,7 @@ get_ldflags() {
   ffmpeg-kit)
     case ${ARCH} in
     armv7 | armv7s | arm64 | arm64e | *-mac-catalyst)
-      echo "${ARCH_FLAGS} ${LINKED_LIBRARIES} ${COMMON_FLAGS} -fembed-bitcode -Wc,-fembed-bitcode ${OPTIMIZATION_FLAGS}"
+      echo "${ARCH_FLAGS} ${LINKED_LIBRARIES} ${COMMON_FLAGS} ${OPTIMIZATION_FLAGS}"
       ;;
     *)
       echo "${ARCH_FLAGS} ${LINKED_LIBRARIES} ${COMMON_FLAGS} ${OPTIMIZATION_FLAGS}"
